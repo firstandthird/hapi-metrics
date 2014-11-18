@@ -1,0 +1,13 @@
+aliases:
+  - 'default'
+  - 'watch:dev'
+shell:
+  command: 'mkdir -p db && mongod --quiet --dbpath ./db'
+  options:
+    stdin: false
+watch:
+  files:
+    - './lib/*.js'
+    - './test/*.js'
+  tasks:
+    - 'default'
