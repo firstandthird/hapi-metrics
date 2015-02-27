@@ -52,23 +52,4 @@ describe('metrics', function() {
       });
     });
   });
-
-  it('should add to aggregate', function(done) {
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
-    today = today.getTime().toString();
-
-    server.plugins.metrics.add('aggregate', { name: 'Bob' }, function(err, metric) {
-      expect(err).to.equal(null);
-      server.plugins.metrics.aggregateCollection().findOne({ type: 'aggregate' }, function(err, metricAggregate) {
-        expect(err).to.equal(null);
-        expect(metricAggregate).to.not.equal(null);
-        expect(metricAggregate.type).to.equal('aggregate');
-        expect(metricAggregate.total).to.equal(1);
-        expect(metricAggregate.days[today]).to.not.equal(undefined);
-        expect(metricAggregate.days[today]).to.equal(1);
-        done();
-      });
-    });
-  });
 });
