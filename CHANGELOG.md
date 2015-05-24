@@ -1,4 +1,12 @@
 
+1.1.0 / 2015-05-24
+==================
+
+  * updated mongo dep
+  * err if can't connect to mongo
+  * added aggregate api endpoint
+
+
 1.0.0 / 2015-04-20
 ==================
 
