@@ -1,4 +1,11 @@
 
+2.0.0 / 2015-05-29
+==================
+
+  * changed date to string
+  * added option to pass in a distinct key for getting unique aggregates
+
+
 1.1.0 / 2015-05-24
 ==================
 
