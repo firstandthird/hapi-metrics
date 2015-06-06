@@ -1,4 +1,11 @@
 
+3.0.0 / 2015-06-06
+==================
+
+  * group by hour instead of day
+  * added verbose option to log errors and metric calls
+
+
 2.0.0 / 2015-05-29
 ==================
 
