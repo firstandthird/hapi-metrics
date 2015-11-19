@@ -7,12 +7,13 @@ var server = new Hapi.Server({
   }
 });
 server.connection({ port: port });
-
+var metricsReportTag = 'append-metric';
 server.register([
   {
     register: require('../'),
     options: {
       handleMetricLogs : true,
+      metricsReportTag : metricsReportTag,
       connectionUrl: 'mongodb://localhost:27017/metric-test'
     }
   }
@@ -23,6 +24,6 @@ server.register([
 
 server.start(function() {
     console.log('Hapi server started @', server.info.uri);
-    server.log(['add-metric'], {name:"twitter-follows", data:"23"});
+    server.log([metricsReportTag], {name:"twitter-follows", data:"23"});
   });
 });
