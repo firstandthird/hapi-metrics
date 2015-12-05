@@ -7,6 +7,9 @@
     "type": "git",
     "url": "https://github.com/firstandthird/hapi-metrics.git"
   },
+  "scripts": {
+    "test": "lab -t 100"
+  },
   "bugs": {
     "url": "https://github.com/firstandthird/hapi-metrics/issues"
   },
@@ -16,6 +19,7 @@
     "mongodb": "^2.0.33"
   },
   "devDependencies": {
+    "code": "^2.0.1",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-watch": "^0.6.1",

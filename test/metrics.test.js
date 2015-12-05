@@ -1,9 +1,66 @@
-/* global describe,before,after,expect,it,beforeEach */
-exports.lab = require('lab-bdd')(require('lab'));
+var Code = require('code');   // assertion library
+var Lab = require('lab');
+var lab = exports.lab = Lab.script();
 var Hapi = require('hapi');
-var MongoClient = require('mongodb').MongoClient;
+var metrics = require("../");
+
+lab.experiment('hapi-metrics', function() {
+  var server;
+  var metric;
+  lab.before(function(done) {
+    server = new Hapi.Server({
+      debug: {
+        log: ['hapi-metrics', 'error'],
+        request: ['tail', 'error']
+      }
+    });
+    server.connection();
+    server.register({
+      register : metrics,
+      options: {
+        handleMetricLogs : true,
+        connectionUrl: 'mongodb://localhost:27017/metric-test'
+      }
+    }, function (err) {
+      if (err) {
+        console.log(err)
+      }
+      server.start(function(err){
+        if (err) console.log(err)
+        done();
+      });
+    });
+  });
+
+  lab.test(' adds to db', function(done){
+    server.plugins.metrics.add('type', { name: 'Bob' }, function(err, metric) {
+      metric = metric.ops[0];
+      Code.expect(err).to.equal(null);
+      Code.expect(metric.type).to.equal('type');
+      Code.expect(metric.data).to.deep.equal({ name: 'Bob' });
+      server.plugins.metrics.collection().findOne({ _id: metric._id }, function(err, result) {
+        Code.expect(err).to.equal(null);
+        Code.expect(result.type).to.equal('type');
+        Code.expect(result.data).to.deep.equal({ name: 'Bob' });
+        Code.expect(result.date).to.not.equal(undefined);
+        done();
+      });
+    });
+  });
+  lab.test(' finds it back', function(done){
+    // server.plugins.metrics.collection().findOne({ _id: metric._id }, function(err, result) {
+    //   Code.expect(err).to.equal(null);
+    //   Code.expect(result.type).to.equal('type');
+    //   Code.expect(result.data).to.deep.equal({ name: 'Bob' });
+    //   Code.expect(result.date).to.not.equal(undefined);
+      done();
+    // });
+  });
+
+});
 
 
+/*
 describe('metrics', function() {
   var server;
 
@@ -14,8 +71,8 @@ describe('metrics', function() {
     server.on('internalError', function (request, err) {
       console.log('ERROR', err.message);
     });
-    server.pack.register({
-      plugin: require('../'),
+    server.register({
+      plugin : metrics,
       options: {
         connectionUrl: 'mongodb://localhost:27017/metric-test'
       }
@@ -53,3 +110,4 @@ describe('metrics', function() {
     });
   });
 });
+*/
