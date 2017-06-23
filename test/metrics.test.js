@@ -3,6 +3,7 @@ exports.lab = require('lab-bdd')(require('lab'));
 var Hapi = require('hapi');
 var MongoClient = require('mongodb').MongoClient;
 
+var mongoUrl = 'mongodb://localhost:27017/metric-test';
 
 describe('metrics', function() {
   var server;
@@ -17,10 +18,10 @@ describe('metrics', function() {
     server.pack.register({
       plugin: require('../'),
       options: {
-        connectionUrl: 'mongodb://localhost:27017/metric-test'
+        connectionUrl: mongoUrl
       }
     }, function() {
-      MongoClient.connect('mongodb://localhost:27017/metric-test', function(err, _db) {
+      MongoClient.connect(mongoUrl, function(err, _db) {
         db = _db;
         done();
       });
@@ -33,11 +34,10 @@ describe('metrics', function() {
   });
 
   it('should add to db', function(done) {
-    server.plugins.metrics.add('type', { name: 'Bob' }, function(err, metric) {
-      metric = metric[0];
+    server.plugins.metrics.add('type', { name: 'Bob' }, function(err, result) {
+      var metric = result.metric;
       expect(err).to.equal(null);
-      expect(metric.type).to.equal('type');
-      expect(metric.data).to.deep.equal({ name: 'Bob' });
+      expect(result.result.ok).to.equal(1);
 
       server.plugins.metrics.collection().findOne({ _id: metric._id }, function(err, result) {
         expect(err).to.equal(null);
